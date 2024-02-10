@@ -1,0 +1,54 @@
+jobs:
+  - name: file-test
+    plan:
+      - task: first-step
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: busybox
+          outputs:
+            - name: first-output
+          run:
+            path: touch
+            args:
+              - first-output/first.txt
+      - task: second-step
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: busybox
+          inputs:
+            - name: first-output
+          outputs:
+            - name: second-output
+          run:
+            path: sh
+            args:
+              - -c
+              - |
+                pwd
+                tree
+                touch second-output/second.txt
+      - task: third-step
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: busybox
+          inputs:
+            - name: first-output
+            - name: second-output
+          outputs:
+            - name: third-output
+          run:
+            path: sh
+            args:
+              - -c
+              - |
+                pwd
+                tree
